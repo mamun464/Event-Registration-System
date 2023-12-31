@@ -7,7 +7,8 @@ from account.views import UserRegistrationView,UserLoginView,EventEnrollmentView
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(),name='register'),
     path('login/', UserLoginView.as_view(),name='login'),
-    path('enroll/', EventEnrollmentView.as_view(), name='event-enroll'),
+    path('event-register/', EventEnrollmentView.as_view(), name='event-register'),
+    path('event-deregister/', EventEnrollmentView.as_view(), name='event-deregister'),
     
     
 ]

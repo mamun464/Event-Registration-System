@@ -151,3 +151,50 @@ class EventEnrollmentView(APIView):
             'available_seat': slot.total_seat - (previous_occupied_seat+1),
             'enrollment': serializer.data,
         }, status=status.HTTP_201_CREATED)
+    
+
+    def delete(self, request, format=None):
+        # Get slot_id from URL parameters
+        slot_id = request.query_params.get('slot_id')
+
+        # Check if slot_id is provided and is a valid numeric value
+        if not slot_id or not slot_id.isdigit():
+            return Response({
+                'success': False,
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'Invalid or missing slot ID in the URL parameters.',
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Convert slot_id to an integer
+        slot_id = int(slot_id)
+
+        # # Ensure the user is authenticated
+        # if not request.user.is_authenticated:
+        #     return Response({
+        #         'success': False,
+        #         'status': status.HTTP_401_UNAUTHORIZED,
+        #         'message': 'User is not authenticated.',
+        #     }, status=status.HTTP_401_UNAUTHORIZED)
+
+        user = request.user
+        slot = get_object_or_404(EventSlot, id=slot_id)
+
+        # Check if the user is already enrolled in the slot
+        existing_enrollment = EventRegistration.objects.filter(user=user.id, slot=slot).first()
+
+        if existing_enrollment:
+            # If user is already enrolled, delete the registration (deregister)
+            existing_enrollment.delete()
+
+            return Response({
+                'success': True,
+                'status': status.HTTP_200_OK,
+                'message': 'Deregistration successful',
+            }, status=status.HTTP_200_OK)
+        else:
+            # If user is not already enrolled, return a message indicating that the user is not enrolled
+            return Response({
+                'success': False,
+                'status': status.HTTP_400_BAD_REQUEST,
+                'message': 'User is not enrolled in this slot.',
+            }, status=status.HTTP_400_BAD_REQUEST)

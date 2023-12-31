@@ -89,3 +89,8 @@ class EventRegistration(models.Model):
 
     def __str__(self):
         return f"{self.user.fullName} - {self.slot.event.title} - {self.slot.start_time} to {self.slot.end_time}"
+    def delete(self, *args, **kwargs):
+        # Update occupied_seat when deleting a registration
+        self.slot.occupied_seat -= 1
+        self.slot.save()
+        super().delete(*args, **kwargs)
