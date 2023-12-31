@@ -168,16 +168,24 @@ class EventEnrollmentView(APIView):
         # Convert slot_id to an integer
         slot_id = int(slot_id)
 
-        # # Ensure the user is authenticated
-        # if not request.user.is_authenticated:
-        #     return Response({
-        #         'success': False,
-        #         'status': status.HTTP_401_UNAUTHORIZED,
-        #         'message': 'User is not authenticated.',
-        #     }, status=status.HTTP_401_UNAUTHORIZED)
+
 
         user = request.user
-        slot = get_object_or_404(EventSlot, id=slot_id)
+        try:
+            slot = get_object_or_404(EventSlot, id=slot_id)
+            
+        except Http404:
+            return Response({
+                'success': False,
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': 'Event Slot Not Found',
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'message': f'Internal Server Error: {str(e)}',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Check if the user is already enrolled in the slot
         existing_enrollment = EventRegistration.objects.filter(user=user.id, slot=slot).first()

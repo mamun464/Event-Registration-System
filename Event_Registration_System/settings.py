@@ -116,6 +116,8 @@ SIMPLE_JWT = {
 
 
 REST_FRAMEWORK = {
+
+    'EXCEPTION_HANDLER': 'eventApp.utils.custom_exception_handler',
     
     'DEFAULT_AUTHENTICATION_CLASSES': (
       

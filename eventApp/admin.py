@@ -10,7 +10,7 @@ class EventAdmin(admin.ModelAdmin):
     inlines = [EventSlotInline]
 
 class EventSlotAdmin(admin.ModelAdmin):
-    list_display = ('event', 'start_time', 'end_time', 'total_seat', 'occupied_seat')
+    list_display = ('id','event', 'start_time', 'end_time', 'total_seat', 'occupied_seat')
     list_filter = ('event', 'start_time', 'end_time')
     search_fields = ['event__title']
 

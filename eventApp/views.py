@@ -80,7 +80,7 @@ class SingleEventDetailView(APIView):
     def get(self, request, pk, format=None):
         try:
             event = get_object_or_404(Event, pk=pk)
-            serializer = EventSerializer(event)
+            serializer = EventListSerializer(event)
             return Response({
                 'success': True,
                 'status': status.HTTP_200_OK,
