@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import CustomUser
+from .models import CustomUser,EventRegistration
 from django.contrib.auth.admin import UserAdmin
 
 class UserAdminConfig(UserAdmin):
@@ -20,6 +20,13 @@ class UserAdminConfig(UserAdmin):
             'fields': ('fullName','email','phone_no','user_profile_img','password1','password2','is_active','is_staff','is_superuser')}
         ),
     )
+
+class EventRegistrationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'slot', 'registration_date')
+    list_filter = ('user', 'slot__event', 'registration_date')
+    search_fields = ['user__full_name', 'slot__event__title']
+
+admin.site.register(EventRegistration, EventRegistrationAdmin)
     
 
 admin.site.register(CustomUser,UserAdminConfig)

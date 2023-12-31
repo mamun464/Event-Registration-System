@@ -1,6 +1,7 @@
 from django.db import models
 import os
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
+from eventApp.models import EventSlot
 
 # Create your CustomUserManager here.
 class CustomUserManager(BaseUserManager):
@@ -79,3 +80,11 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
         return True
 
     
+
+class EventRegistration(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE,related_name='user')
+    slot = models.ForeignKey(EventSlot, on_delete=models.CASCADE,related_name='Slot_registration')
+    registration_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.fullName} - {self.slot.event.title} - {self.slot.start_time} to {self.slot.end_time}"
