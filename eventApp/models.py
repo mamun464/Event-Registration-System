@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 # Create your models here.
 class Event(models.Model):
     title = models.CharField(max_length=255,unique=True)
@@ -19,6 +19,12 @@ class EventSlot(models.Model):
     occupied_seat = models.PositiveIntegerField(default=0)
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='event')
+
+    def clean(self):
+        super().clean()
+
+        if self.occupied_seat > self.total_seat:
+            raise ValidationError({'occupied_seat': 'Occupied seats cannot be greater than total seats.'})
 
     def __str__(self):
         return f"{self.event.title} - {self.start_time} to {self.end_time}"

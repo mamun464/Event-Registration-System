@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from account.models import CustomUser
+from account.models import CustomUser,EventRegistration
 from django.core.exceptions import ValidationError
 from django.utils.encoding import smart_str,force_bytes,DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -70,6 +70,11 @@ class UserListSerializer(serializers.ModelSerializer):
         class Meta:
             model = CustomUser
             fields = ['id','fullName','email','phone_no', 'user_profile_img','is_active','is_staff']
+
+class EventRegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventRegistration
+        fields = ['user', 'slot', 'registration_date']
         
 
 

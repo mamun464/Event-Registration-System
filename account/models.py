@@ -2,6 +2,7 @@ from django.db import models
 import os
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
 from eventApp.models import EventSlot
+from django.db import transaction
 
 # Create your CustomUserManager here.
 class CustomUserManager(BaseUserManager):
