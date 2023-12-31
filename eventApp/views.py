@@ -154,3 +154,30 @@ class SingleEventDetailView(APIView):
                 'message': f'Error deleting event: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+
+class EventSearchView(APIView):
+
+    def get(self, request, format=None):
+        query = self.request.query_params.get('query', '')
+        
+        # Perform search on title and location
+        events = Event.objects.search(query)
+        
+        # Check if events are found
+        if events.exists():
+            # Serialize events with reverse related slots
+            event_serializer = EventListSerializer(events, many=True)
+            
+            return Response({
+                'success': True,
+                'status': status.HTTP_200_OK,
+                'message': 'Event Found',
+                'events': event_serializer.data,
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                'success': False,
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': 'No events found for the given query.',
+            }, status=status.HTTP_404_NOT_FOUND)
+        

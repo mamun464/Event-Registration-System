@@ -3,6 +3,8 @@ import os
 from django.contrib.auth.models import AbstractBaseUser,PermissionsMixin,BaseUserManager
 from eventApp.models import EventSlot
 from django.db import transaction
+from django.core.exceptions import ValidationError
+
 
 # Create your CustomUserManager here.
 class CustomUserManager(BaseUserManager):
@@ -89,6 +91,9 @@ class EventRegistration(models.Model):
 
     def __str__(self):
         return f"{self.user.fullName} - {self.slot.event.title} - {self.slot.start_time} to {self.slot.end_time}"
+    
+
+        
     def delete(self, *args, **kwargs):
         # Update occupied_seat when deleting a registration
         self.slot.occupied_seat -= 1

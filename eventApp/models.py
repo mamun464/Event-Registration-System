@@ -1,5 +1,13 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+
+class EventManager(models.Manager):
+    def search(self, query):
+        return self.filter(
+            models.Q(title__icontains=query) |
+            models.Q(description__icontains=query) |
+            models.Q(location_name__icontains=query)
+        )
 # Create your models here.
 class Event(models.Model):
     title = models.CharField(max_length=255,unique=True)
@@ -7,6 +15,8 @@ class Event(models.Model):
     date = models.DateField()
     time= models.TimeField(blank=True, null=True)
     location_name = models.CharField(max_length=255)
+
+    objects = EventManager()
     
 
     def __str__(self):
@@ -28,3 +38,4 @@ class EventSlot(models.Model):
 
     def __str__(self):
         return f"{self.event.title} - {self.start_time} to {self.end_time}"
+    

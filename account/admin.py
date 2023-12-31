@@ -25,6 +25,7 @@ class EventRegistrationAdmin(admin.ModelAdmin):
     list_display = ('user', 'slot', 'registration_date')
     list_filter = ('user', 'slot__event', 'registration_date')
     search_fields = ['user__full_name', 'slot__event__title']
+    
 
 admin.site.register(EventRegistration, EventRegistrationAdmin)
     
