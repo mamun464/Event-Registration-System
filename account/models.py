@@ -79,19 +79,3 @@ class CustomUser(AbstractBaseUser,PermissionsMixin):
         return True
 
     
-    # def save(self, *args, **kwargs):
-    #     # Check if an old image URL exists
-    #     if self.pk:
-    #         old_instance = self.__class__.objects.get(pk=self.pk)
-    #         if old_instance.user_profile_img:
-    #             # No need to check if it's a file on the filesystem for URL fields
-    #             # Delete the old image URL
-    #             old_instance.user_profile_img = None  # Or set it to a default image URL if needed
-    #             old_instance.save()
-
-        # super().save(*args, **kwargs)
-    # @property
-    # def is_staff(self):
-    #     "Is the user a member of staff?"
-    #     # Simplest possible answer: All admins are staff
-    #     return self.is_superuser
