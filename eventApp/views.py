@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Event,EventSlot
-from .serializers import EventSerializer, EventSlotSerializer
+from .serializers import EventSerializer, EventSlotSerializer,EventListSerializer
 
 class CreateEventView(APIView):
     def post(self, request, *args, **kwargs):
@@ -53,3 +53,9 @@ class CreateEventView(APIView):
 
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class EventListView(APIView):
+    def get(self, request, format=None):
+        events = Event.objects.all()
+        serializer = EventListSerializer(events, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
