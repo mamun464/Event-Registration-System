@@ -3,6 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import Event,EventSlot
 from .serializers import EventSerializer, EventSlotSerializer,EventListSerializer
+from django.shortcuts import get_object_or_404
+from django.http import Http404
+
 
 class CreateEventView(APIView):
     def post(self, request, *args, **kwargs):
@@ -56,6 +59,45 @@ class CreateEventView(APIView):
     
 class EventListView(APIView):
     def get(self, request, format=None):
-        events = Event.objects.all()
-        serializer = EventListSerializer(events, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        try:
+            events = Event.objects.all()
+            serializer = EventListSerializer(events, many=True)
+            return Response({
+                'success': True,
+                'status': status.HTTP_200_OK,
+                'message': 'Success',
+                'events': serializer.data,
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                'success': False,
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'message': f'Error fetching events: {str(e)}',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+class SingleEventDetailView(APIView):
+    def get(self, request, pk, format=None):
+        try:
+            event = get_object_or_404(Event, pk=pk)
+            serializer = EventSerializer(event)
+            return Response({
+                'success': True,
+                'status': status.HTTP_200_OK,
+                'message': 'Success',
+                'event': serializer.data,
+            }, status=status.HTTP_200_OK)
+        except Http404:
+            return Response({
+                'success': False,
+                'status': status.HTTP_404_NOT_FOUND,
+                'message': 'Event not found',
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return Response({
+                'success': False,
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'message': f'Internal Server Error: {str(e)}',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
