@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from account.models import CustomUser,EventRegistration
+from eventApp.models import EventSlot,Event
 from django.core.exceptions import ValidationError
 from django.utils.encoding import smart_str,force_bytes,DjangoUnicodeDecodeError
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
@@ -75,6 +76,30 @@ class EventRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = EventRegistration
         fields = ['user', 'slot', 'registration_date']
+
+
+from rest_framework import serializers
+from .models import EventSlot, EventRegistration
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = ['id', 'title', 'description', 'date', 'time', 'location_name']
+
+class EventSlotSerializer(serializers.ModelSerializer):
+    event = EventSerializer()
+    class Meta:
+        model = EventSlot
+        fields = ('event', 'id', 'start_time', 'end_time', 'total_seat', 'occupied_seat')
+
+class EventRegistrationSerializer(serializers.ModelSerializer):
+    event_details = EventSlotSerializer(source='slot')  # Include the EventSlot details in the serialization
+
+    class Meta:
+        model = EventRegistration
+        fields = ('user', 'event_details', 'registration_date')
+
         
 
 

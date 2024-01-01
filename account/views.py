@@ -2,12 +2,13 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from account.serializer import UserRegistrationSerializer ,UserLoginSerializer,UserListSerializer,EventRegistrationSerializer
+from account.serializer import UserRegistrationSerializer ,UserLoginSerializer,UserListSerializer,EventRegistrationSerializer,EventSlotSerializer,EventRegistrationSerializer
 from django.contrib.auth import authenticate,login
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from account.models import CustomUser,EventSlot,EventRegistration
+from .models import CustomUser
+from .models import EventSlot,EventRegistration
 from rest_framework.renderers import JSONRenderer
 from django.utils import timezone
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -171,6 +172,7 @@ class EventEnrollmentView(APIView):
 
 
         user = request.user
+        
         try:
             slot = get_object_or_404(EventSlot, id=slot_id)
             
@@ -188,7 +190,8 @@ class EventEnrollmentView(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         # Check if the user is already enrolled in the slot
-        existing_enrollment = EventRegistration.objects.filter(user=user.id, slot=slot).first()
+        
+        existing_enrollment = EventRegistration.objects.filter(user=user, slot=slot).first()
 
         if existing_enrollment:
             # If user is already enrolled, delete the registration (deregister)
@@ -206,3 +209,37 @@ class EventEnrollmentView(APIView):
                 'status': status.HTTP_400_BAD_REQUEST,
                 'message': 'User is not enrolled in this slot.',
             }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+from .models import EventRegistration
+class UserEvents(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+
+        try:
+            user = request.user
+
+            # Retrieve the user's registrations
+            user_registrations = EventRegistration.objects.filter(user=user)
+
+            # Serialize the EventSlot objects related to the user's registrations
+            serializer = EventRegistrationSerializer(user_registrations, many=True)
+
+            # Return the response
+            return Response({
+                'success': True,
+                'status': status.HTTP_200_OK,
+                'message': 'User registrations retrieved successfully',
+                'Enrolled Events': serializer.data,
+            }, status=status.HTTP_200_OK)
+        except Exception as e:
+            # Handle the case where an error occurs during serialization
+            return Response({
+                'success': False,
+                'status': status.HTTP_500_INTERNAL_SERVER_ERROR,
+                'message': f'Error retrieving user registrations: {str(e)}',
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+        
