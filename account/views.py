@@ -2,19 +2,13 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from account.serializer import UserRegistrationSerializer ,UserLoginSerializer,UserListSerializer,EventRegistrationSerializer,EventSlotSerializer,EventRegistrationSerializer
-from django.contrib.auth import authenticate,login
+from account.serializer import UserRegistrationSerializer ,UserLoginSerializer,UserListSerializer,EventRegistrationSerializer,EventRegistrationSerializer
+from django.contrib.auth import login
 from account.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.permissions import IsAuthenticated,IsAdminUser
-from .models import CustomUser
-from .models import EventSlot,EventRegistration
-from rest_framework.renderers import JSONRenderer
+from rest_framework.permissions import IsAuthenticated
+from .models import EventSlot
 from django.utils import timezone
-from rest_framework_simplejwt.authentication import JWTAuthentication
-from django.db.models import ProtectedError
-from django.contrib.auth import logout
-import requests
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import get_object_or_404
 from django.http import Http404
@@ -154,6 +148,8 @@ class EventEnrollmentView(APIView):
         }, status=status.HTTP_201_CREATED)
     
 
+class EventDeregistration(APIView):
+    permission_classes = [IsAuthenticated]
     def delete(self, request, format=None):
         # Get slot_id from URL parameters
         slot_id = request.query_params.get('slot_id')

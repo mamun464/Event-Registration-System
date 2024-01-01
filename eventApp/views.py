@@ -107,6 +107,7 @@ class SingleEventDetailView(APIView):
                 'message': f'Internal Server Error: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+class EventUpdateView(APIView):
     def put(self, request, pk, format=None):
         try:
             event = get_object_or_404(Event, pk=pk)
@@ -138,6 +139,7 @@ class SingleEventDetailView(APIView):
                 'message': f'Error updating event: {str(e)}',
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+class EventDeleteView(APIView):
     def delete(self, request, pk, format=None):
         try:
             event = get_object_or_404(Event, pk=pk)
