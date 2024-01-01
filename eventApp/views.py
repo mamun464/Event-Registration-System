@@ -55,7 +55,13 @@ class CreateEventView(APIView):
             }, status=status.HTTP_201_CREATED)
 
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+                'success': False,
+                'status': 400,
+                'message': 'Event Creatation Failed',
+                'error_details': serializer.errors,
+                # 'slots': slot_serializer.data,  # You might want to replace this with the actual data for slots
+            }, status=status.HTTP_400_BAD_REQUEST)
     
 class EventListView(APIView):
     def get(self, request, format=None):
