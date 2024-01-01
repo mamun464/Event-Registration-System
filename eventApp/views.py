@@ -144,9 +144,9 @@ class SingleEventDetailView(APIView):
             event.delete()
             return Response({
                 'success': True,
-                'status': status.HTTP_204_NO_CONTENT,
+                'status': status.HTTP_200_OK,
                 'message': 'Event deleted successfully',
-            }, status=status.HTTP_204_NO_CONTENT)
+            }, status=status.HTTP_200_OK)
         except Http404:
             return Response({
                 'success': False,
