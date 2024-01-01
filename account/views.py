@@ -230,7 +230,7 @@ class UserEvents(APIView):
             return Response({
                 'success': True,
                 'status': status.HTTP_200_OK,
-                'message': 'User registrations retrieved successfully',
+                'message': 'retrieved Event successfully',
                 'Enrolled Events': serializer.data,
             }, status=status.HTTP_200_OK)
         except Exception as e:
