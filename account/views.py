@@ -30,6 +30,15 @@ class UserRegistrationView(APIView):
 
         serializer = UserRegistrationSerializer(data=request.data)
 
+        required_fields = ['email','fullName','phone_no','password', 'password2']
+        for field in required_fields:
+            if field not in request.data or not request.data[field]:
+                return Response({
+                    'success': False,
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'message': f'{field} is missing or empty',
+                }, status=status.HTTP_400_BAD_REQUEST)
+
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
             token=get_tokens_for_user(user)
@@ -48,6 +57,16 @@ class UserLoginView(APIView):
     renderer_classes = [UserRenderer]
     def post(self, request, format=None):
         serializer = UserLoginSerializer(data=request.data)
+
+        required_fields = ['phone_no', 'password']
+        for field in required_fields:
+            if field not in request.data or not request.data[field]:
+                return Response({
+                    'success': False,
+                    'status': status.HTTP_400_BAD_REQUEST,
+                    'message': f'{field} is missing or empty',
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
         if serializer.is_valid(raise_exception=True):
             # Access the authenticated user from the serializer
             user = serializer.validated_data['user']

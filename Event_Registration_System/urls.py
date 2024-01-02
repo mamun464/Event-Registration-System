@@ -15,8 +15,7 @@ schema_view = get_schema_view(
    openapi.Info(
       title="Event Registration System API Documentation",
       default_version='v1',
-      description="For Django Admin Panel Login Credentials Below:\n\n Phone no: admin\n Password: admin",
-      contact=openapi.Contact(email="mrashid.uiu.cse@gmail.com"),
+      description="For Django Admin Panel Login Credentials Below:\n\n Phone no: admin\n Password: admin\n\n\nMamunur Rashid\nSoftware Developer (Trainee)\nRed Dot Digital || Robi Axiata Ltd\nCell: 01767213613\nEmail: mrashid.uiu.cse@gmail.com\nGithub: https://github.com/mamun464",
       
    ),
    public=True,
@@ -26,12 +25,15 @@ schema_view = get_schema_view(
 
 
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/user/',include('account.urls')),
-    path('api/events/',include('eventApp.urls')),
 
-   
+
+urlpatterns = [
    path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+   
+   # path('admin/', admin.site.urls),
+   path('api/user/',include('account.urls')),
+   path('api/events/',include('eventApp.urls')),
+   
+   
 ]

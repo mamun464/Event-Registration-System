@@ -13,8 +13,15 @@ class CreateEventView(APIView):
 
         # Validate slots data
         slots_data = request.data.get('slots', [])
+
+
         if not slots_data or not isinstance(slots_data, list) or len(slots_data) == 0:
-            return Response({'error': 'At least one slot is required.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                'success': False,
+                'status': 400,
+                'message': 'Event Creation Failed. At least one slot is required.',
+            }, status=status.HTTP_400_BAD_REQUEST)
+           
 
         if serializer.is_valid():
             # Create the event
@@ -26,6 +33,7 @@ class CreateEventView(APIView):
             # Create slots associated with the event
             slots_data = request.data.get('slots', [])
             slots_data_list = []
+            
 
             for slot_data in slots_data:
                 slot_data['event'] = event.id
@@ -58,7 +66,7 @@ class CreateEventView(APIView):
         return Response({
                 'success': False,
                 'status': 400,
-                'message': 'Event Creatation Failed',
+                'message': 'Event Creation Failed',
                 'error_details': serializer.errors,
                 # 'slots': slot_serializer.data,  # You might want to replace this with the actual data for slots
             }, status=status.HTTP_400_BAD_REQUEST)
